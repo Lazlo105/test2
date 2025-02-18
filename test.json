@@ -1,0 +1,9 @@
+{
+  "_id": {
+    "$oid": "67b4736c8401817edf008e8e"
+  },
+  "username": "test",
+  "full_name": "full test",
+  "email": "test@test.com",
+  "password": "scrypt:32768:8:1$iLx6KvwQaqqe1Q0M$4e3c50c62dfaaaa117b31e8547738cac2082c9d6577c82b1774bfbc3a8890160cb1a2f27bcac759888fe9739f97f26153c4769589c59c8d00729f946e3c7f111"
+}

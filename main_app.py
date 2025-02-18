@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort, redirect, url_for, request, session
+from flask import Flask, render_template, abort, redirect, url_for, request, session, flash
 from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -27,5 +27,39 @@ def render_profile():
         return redirect(url_for("login"))
     return render_template("profile.html", username=session["username"])
 
-if __name__ == "main":
-    app.run()
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        full_name = request.form["full_name"]
+        email = request.form["email"]
+        password = request.form["password"]
+
+        # Проверка, существует ли уже пользователь с таким именем
+        if mongo.db.users.find_one({"username": username}):
+            flash("Username already exists", "danger")
+            return redirect(url_for("register"))
+
+        # Хешируем пароль
+        hashed_password = generate_password_hash(password)
+
+        # Добавляем пользователя в базу данных
+        mongo.db.users.insert_one({
+            "username": username,
+            "full_name": full_name,
+            "email": email,
+            "password": hashed_password
+        })
+
+        flash("Registration successful! You can now log in.", "success")
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    return redirect(url_for("login"))
+
+if __name__ == "__main__":
+    app.run(debug=True)
